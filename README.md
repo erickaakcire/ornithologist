@@ -5,6 +5,8 @@ Python script that retrieves Twitter data via the Twitter API for further analys
 
 I developed Ornithologist to provide students in my Digital Research Methods course with a small sample of Twitter data on any topic of interest to them to do exercises on various forms of social media analysis. 
 
+Requires Python-Twitter https://github.com/bear/python-twitter and obtaining / filling in your own Twitter API credientials
+
 Ornothologist produces 6 tab-delimited UTF-8 files and one directory with up to 100 text files per query.
 
 searchterm-fileName-searchLevelData.txt - 
@@ -27,3 +29,6 @@ General purpose file with user-level data. See Twitter API documentation on user
 
 searchterm-fileName-tweets/ - 
 Directory with the text of each tweet as a separate text file, named as Tweet ID.txt. Suitable for NLP analysis applications.
+
+Known Issues:
+Running the same search multiple times will append the new results to the files, but this can result in duplicated information, which currently must be removed by the end user
