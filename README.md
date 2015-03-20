@@ -1,34 +1,40 @@
 ornithologist
 =============
 
-Python script that retrieves Twitter data via the Twitter API for further analysis
+Ornithologist is a python script that retrieves Twitter data via the Twitter Search API for further analysis. I developed Ornithologist to provide students in my courses with a way to gather their own Twitter data to learn social media analysis.
 
-I developed Ornithologist to provide students in my Digital Research Methods course with a small sample of Twitter data on any topic of interest to them to do exercises on various forms of social media analysis. 
+Requires Python-Twitter https://github.com/bear/python-twitter and obtaining / filling in your own Twitter API credentials and directory for data output in a config file (not included)
 
-Requires Python-Twitter https://github.com/bear/python-twitter and obtaining / filling in your own Twitter API credientials
+Ornithologist produces tab-delimited UTF-8 files with the resulting data and a directory with each tweet as a separate text file (often needed for natural language processing analysis):
 
-Ornothologist produces 6 tab-delimited UTF-8 files and one directory with up to 100 text files per query.
-
-searchterm-fileName-searchLevelData.txt - 
+searchLevelData.csv - 
 Header row and one of data per search indicating the variables filled in and the time of the search (UTC)
 
-searchterm-fileName-tweets.txt - 
+tweets.csv - 
 General purpose file with tweet-level data. See Twitter API documentation on status objects. 
 
-searchterm-fileName-hashtagEdges.txt - 
-Two mode network data (user = Source, hashtag= Target) ready to import to Gephi or other network analysis programs.
-
-searchterm-fileName-rtEdges.txt - 
-Two mode network data (user = Source, retweeted user= Target).
-
-searchterm-fileName-userEdges.txt - 
-Two mode network data (user = Source, user addressed= Target).
-
-searchterm-fileName-users.txt - 
+users.csv - 
 General purpose file with user-level data. See Twitter API documentation on user objects.
 
-searchterm-fileName-tweets/ - 
-Directory with the text of each tweet as a separate text file, named as Tweet ID.txt. Suitable for NLP analysis applications.
+links.csv - Links found in tweets, use option --unshorten to get the destination link.
+
+hashtags.csv - 
+tweet ID and hashtag used in the tweet - one line per hashtag
+
+mentions.csv - 
+tweet ID and user name of the user mentioned in the tweet - one line per user
+
+user2hashtagEdges.csv - 
+Two mode network data (user = Source, hashtag= Target) ready to import to Gephi or other network analysis programs.
+
+rtEdges.csv - 
+Two mode network data (user = Source, retweeted user= Target).
+
+userEdges.csv - 
+Two mode network data (user = Source, user addressed= Target).
+
+tweets/ - 
+Directory with the text of each tweet as a separate text file, named as Tweet ID.csv. Suitable for NLP analysis applications.
 
 Known Issues:
-Running the same search multiple times will append the new results to the files, but this can result in duplicated information, which currently must be removed by the end user
+Check files for duplicates.
