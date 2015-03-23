@@ -126,17 +126,17 @@ while iterate < iterations:
         if toUserMatch:
             toUserList.append(toUserMatch.group(1))
 
-            userFileName = defaultDir + searchterm + "-userEdges.csv"
+            userFileName = defaultDir + searchterm + "/userEdges.csv"
 
-            if os.path.isfile(userFileName) is True:
-                userNet = codecs.open(userFileName, encoding='utf-8', mode='a')
-                userNet.write("\n" + unicode(s.user.screen_name) + "	" + unicode(toUserMatch.group(1)) + "\t" + unicode(s.id) + "\t" + unicode(strip))
-            else:
+            if not os.path.exists(os.path.dirname(userFileName)):
+                os.makedirs(os.path.dirname(userFileName))
+            if os.path.isfile(userFileName) is False:
                 # open a file to write the to user network
                 userNet = codecs.open(userFileName, encoding='utf-8', mode='w+')
                 #Source is user, target is user mentioned
-                userNet.write("Source\tTarget\ttweet id\ttweet\n")
-                userNet.write(unicode(s.user.screen_name) + "\t" + unicode(toUserMatch.group(1)) + "\t" + unicode(s.id) + "\t" + unicode(strip))
+                userNet.write("Source\tTarget\ttweet id\ttweet")
+            userNet = codecs.open(userFileName, encoding='utf-8', mode='a')
+            userNet.write("\n" + unicode(s.user.screen_name) + "	" + unicode(toUserMatch.group(1)) + "\t" + unicode(s.id) + "\t" + unicode(strip))
         else:
             toUserList.append('')
 
@@ -144,18 +144,20 @@ while iterate < iterations:
         rtSearch = re.compile(r'RT @(\w*\b)', re.U)
         rtMatch = rtSearch.match(strip)
         rtList = []
-        rtFileName = defaultDir + searchterm + "-rtEdges.csv"
+        rtFileName = defaultDir + searchterm + "/rtEdges.csv"
         if rtMatch:
             rtList.append(rtMatch.group(1))
-            if os.path.isfile(rtFileName) is True:
-                rt = codecs.open(rtFileName, encoding='utf-8', mode='a')
-                rt.write("\n" + unicode(s.user.screen_name) + "\t" + unicode(rtMatch.group(1)) + "\t" + unicode(s.id) + "\t" + unicode(strip))
-            else:
+
+            if not os.path.exists(os.path.dirname(rtFileName)):
+                os.makedirs(os.path.dirname(rtFileName))
+            if os.path.isfile(rtFileName) is False:
                 # open a file to write the RT network
                 rt = codecs.open(rtFileName, encoding='utf-8', mode='w+')
                 #Source is user, target is user retweeted
-                rt.write("Source\tTarget\ttweet id\ttweet\n")
-                rt.write(unicode(s.user.screen_name) + "\t" + unicode(rtMatch.group(1)) + "\t" + unicode(s.id) + "\t" + unicode(strip))
+                rt.write("Source\tTarget\ttweet id\ttweet")
+
+            rt = codecs.open(rtFileName, encoding='utf-8', mode='a')
+            rt.write("\n" + unicode(s.user.screen_name) + "\t" + unicode(rtMatch.group(1)) + "\t" + unicode(s.id) + "\t" + unicode(strip))
         else:
             rtList.append('')
 
@@ -175,54 +177,51 @@ while iterate < iterations:
         dateObject = datetime.strptime(s.created_at, '%a %b %d %H:%M:%S +0000 %Y')
         unixDate = dateObject.strftime('%Y-%m-%d %H:%M:%S')
 
-        tweetFileName = defaultDir + searchterm + "-tweets.csv"
+        tweetFileName = defaultDir + searchterm + "/tweets.csv"
 
-        if os.path.isfile(tweetFileName) is True:
-          #open a file to write the tweet-level data
-          t = codecs.open(tweetFileName, encoding='utf-8', mode='a')
-          # write one line of data to tweet file
-          t.write("\n" + unicode(s.id) + "\t" + unicode(s.user.id) + "\t" + unicode(s.user.screen_name) + "\t" + unixDate + "\t" + unicode(s.retweet_count) + "\t" + str(s.favorite_count) + "\t" + unicode(tweetSource) + "\t" + unicode(s.lang) + "\t" + unicode(s.withheld_in_countries) + "\t" + unicode(strip) + "\t" + ', '.join(toUserList) + "\t" + ', '.join(rtList))
-        else:
-          t = codecs.open(tweetFileName, encoding='utf-8', mode='w+')
-          # Write the header row
-          t.write("tweet id\tuser id\tuser name\ttime created\tretweets\tfavorites\ttweet source\tlanguage\twithheld from\ttweet\tto user\tretweet of\n")
-          # write one line of data to tweet file
-          t.write(unicode(s.id) + "\t" + unicode(s.user.id) + "\t" + unicode(s.user.screen_name) + "\t" + unixDate + "\t" + unicode(s.retweet_count) + "\t" + str(s.favorite_count) + "\t" + unicode(tweetSource) + "\t" + unicode(s.lang) + "\t" + unicode(s.withheld_in_countries) + "\t" + unicode(strip) + "\t" + ', '.join(toUserList) + "\t" + ', '.join(rtList))
+        if not os.path.exists(os.path.dirname(tweetFileName)):
+            os.makedirs(os.path.dirname(tweetFileName))
 
-        hashtagEdgeFileName = defaultDir + searchterm + "-user2hashtagEdges.csv"
-        hashtagFileName = defaultDir + searchterm + "-hashtags.csv"
-        mentionFileName = defaultDir + searchterm + "-mentions.csv"
-        linkFileName = defaultDir + searchterm + "-links.csv"
+        if os.path.isfile(tweetFileName) is False:
+            t = codecs.open(tweetFileName, encoding='utf-8', mode='w+')
+            t.write("tweet id\tuser id\tuser name\ttime created\tretweets\tfavorites\ttweet source\tlanguage\twithheld from\ttweet\tto user\tretweet of\tlink")
+        t = codecs.open(tweetFileName, encoding='utf-8', mode='a')
+        # write one line of data to tweet file
+        t.write("\n" + unicode(s.id) + "\t" + unicode(s.user.id) + "\t" + unicode(s.user.screen_name) + "\t" + unixDate + "\t" + unicode(s.retweet_count) + "\t" + str(s.favorite_count) + "\t" + unicode(tweetSource) + "\t" + unicode(s.lang) + "\t" + unicode(s.withheld_in_countries) + "\t" + unicode(strip) + "\t" + ', '.join(toUserList) + "\t" + ', '.join(rtList) + "\t" + "https://twitter.com/" + unicode(s.user.screen_name) + "/status/" + unicode(s.id))
+
+        hashtagEdgeFileName = defaultDir + searchterm + "/user2hashtagEdges.csv"
+        hashtagFileName = defaultDir + searchterm + "/hashtags.csv"
+        mentionFileName = defaultDir + searchterm + "/mentions.csv"
+        linkFileName = defaultDir + searchterm + "/links.csv"
 
         for h in hashtagList:
-          if os.path.isfile(hashtagEdgeFileName) is True:
-            #open a file to write the hashtag-level data
-            hash = codecs.open(hashtagEdgeFileName, encoding='utf-8', mode='a')
-            hash.write("\n" + unicode(s.user.screen_name) + "\t" + unicode(h) + "\t" + unicode(s.id) + "\t" + unicode(strip))
-          else:
-            #open a file to write the hashtag-level data
+          if not os.path.exists(os.path.dirname(hashtagEdgeFileName)):
+              os.makedirs(os.path.dirname(hashtagEdgeFileName))
+
+          if os.path.isfile(hashtagEdgeFileName) is False:
             hash = codecs.open(hashtagEdgeFileName, encoding='utf-8', mode='w+')
             #Source is user and target is hashtag
-            hash.write("Source\tTarget\ttweet id\ttweet\n")
-            hash.write(unicode(s.user.screen_name) + "\t" + unicode(h) + "\t" + unicode(s.id) + "\t" + unicode(strip))
-          #do another if/else here to write a hashtag list with just tweet id and hashtag, then do them for user mentions and links, then expand the links also while I'm at it if possible... should be.
-          if os.path.isfile(hashtagFileName) is True:
-            hash = codecs.open(hashtagFileName, encoding='utf-8', mode='a')
-            hash.write("\n" + unicode(s.id) + "\t" + unicode(h))
-          else:
-            #open a file to write the hashtag-level data
+            hash.write("Source\tTarget\ttweet id\ttweet")
+          hash = codecs.open(hashtagEdgeFileName, encoding='utf-8', mode='a')
+          hash.write("\n" + unicode(s.user.screen_name) + "\t" + unicode(h) + "\t" + unicode(s.id) + "\t" + unicode(strip))
+
+          if not os.path.exists(os.path.dirname(hashtagFileName)):
+              os.makedirs(os.path.dirname(hashtagFileName))
+          if os.path.isfile(hashtagFileName) is False:
             hash = codecs.open(hashtagFileName, encoding='utf-8', mode='w+')
-            hash.write("tweet id\thashtag\n")
-            hash.write(unicode(s.id) + "\t" + unicode(h))
+            hash.write("tweet id\thashtag")
+          hash = codecs.open(hashtagFileName, encoding='utf-8', mode='a')
+          hash.write("\n" + unicode(s.id) + "\t" + unicode(h))
 
         for m in mentionList:
-          if os.path.isfile(mentionFileName) is True:
-            mention = codecs.open(mentionFileName, encoding='utf-8',mode='a')
-            mention.write("\n" + unicode(s.id) + "\t" + unicode(m))
-          else:
+          if not os.path.exists(os.path.dirname(mentionFileName)):
+              os.makedirs(os.path.dirname(mentionFileName))
+
+          if os.path.isfile(mentionFileName) is False:
             mention = codecs.open(mentionFileName, encoding='utf-8',mode='a')
             mention.write("tweet id\tuser name mentioned")
-            mention.write("\n" + unicode(s.id) + "\t" + unicode(m))
+          mention = codecs.open(mentionFileName, encoding='utf-8',mode='a')
+          mention.write("\n" + unicode(s.id) + "\t" + unicode(m))
 
         for l in linkList:
             #Unshorten links if flag is True
@@ -237,22 +236,25 @@ while iterate < iterations:
                         else:
                             unshort = "no redirection"
                 except:
-                    unshort = "error"
-                if os.path.isfile(linkFileName) is True:
-                    linkFile = codecs.open(linkFileName, encoding='utf-8',mode='a')
-                    linkFile.write("\n" + unicode(s.id) + "\t" + unicode(l) + "\t" + unshort)
-                else:
+                    unshort = "error or timeout"
+
+                if not os.path.exists(os.path.dirname(linkFileName)):
+                    os.makedirs(os.path.dirname(linkFileName))
+
+                if os.path.isfile(linkFileName) is False:
                     linkFile = codecs.open(linkFileName, encoding='utf-8',mode='a')
                     linkFile.write("tweet id\tshort link\tunshortened link")
-                    linkFile.write("\n" + unicode(s.id) + "\t" + unicode(l) + "\t" + unshort)
+                linkFile = codecs.open(linkFileName, encoding='utf-8',mode='a')
+                linkFile.write("\n" + unicode(s.id) + "\t" + unicode(l) + "\t" + unshort)
             else:
-                if os.path.isfile(linkFileName) is True:
-                    linkFile = codecs.open(linkFileName, encoding='utf-8',mode='a')
-                    linkFile.write("\n" + unicode(s.id) + "\t" + unicode(l))
-                else:
+                if not os.path.exists(os.path.dirname(linkFileName)):
+                    os.makedirs(os.path.dirname(linkFileName))
+
+                if os.path.isfile(linkFileName) is False:
                     linkFile = codecs.open(linkFileName, encoding='utf-8',mode='a')
                     linkFile.write("tweet id\tshort link")
-                    linkFile.write("\n" + unicode(s.id) + "\t" + unicode(l))
+                linkFile = codecs.open(linkFileName, encoding='utf-8',mode='a')
+                linkFile.write("\n" + unicode(s.id) + "\t" + unicode(l))
 
             #add users to the userList array
             for s in statuses:
@@ -270,7 +272,9 @@ while iterate < iterations:
         with codecs.open(filename, encoding='utf-8', mode="w+") as f:
             f.write(unicode(s.text))
 
-userFileName = defaultDir + searchterm + "-users.csv"
+userFileName = defaultDir + searchterm + "/users.csv"
+if not os.path.exists(os.path.dirname(userFileName)):
+    os.makedirs(os.path.dirname(userFileName))
 u = codecs.open(userFileName, encoding='utf-8', mode='w+')
 #deduplicate the user list before printing
 userList = list(set(userList))
