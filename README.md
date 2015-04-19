@@ -3,11 +3,13 @@ ornithologist
 
 Ornithologist is a python script that retrieves Twitter data via the Twitter Search API for further analysis. I developed Ornithologist to provide students in my courses with a way to gather their own Twitter data to learn social media analysis.
 
-Requires Python-Twitter https://github.com/bear/python-twitter and obtaining / filling in your own Twitter API credentials and directory for data output in a config file (example file included)
+Requires Python-Twitter https://github.com/bear/python-twitter and obtaining / filling in your own Twitter API credentials and directory for data output in a config file (example config file included).
+
+For available options and usage run the program and a help message with available commands will appear. 
 
 Ornithologist produces tab-delimited UTF-8 files with the resulting data and a directory with each tweet as a separate text file (often needed for natural language processing analysis):
 
-ornithologistLog.csv* - 
+ornithologistLog.csv - 
 Header row and one of data per search indicating the variables filled in and the time of the search (UTC)
 
 tweets.csv - 
